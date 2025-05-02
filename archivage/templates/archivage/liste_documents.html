@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des Documents{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Liste des Documents</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Titre</th>
+            <th>Catégorie</th>
+            <th>Date de création</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for document in documents %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ document.titre }}</td>
+            <td>{{ document.categorie.nom }}</td>
+            <td>{{ document.date_creation }}</td>
+            <td>
+                <a href="#" class="btn btn-primary btn-sm">Voir</a>
+                <a href="#" class="btn btn-warning btn-sm">Modifier</a>
+                <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
