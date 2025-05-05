@@ -3,6 +3,69 @@
 {% block title %}Accueil{% endblock %}
 
 {% block content %}
-<h1>Bienvenue sur la plateforme de gestion des archives</h1>
-<p>Utilisez le menu pour naviguer entre les documents et les catégories.</p>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Bienvenue sur la plateforme de gestion des archives</h1>
+    <p class="text-center">Gérez vos documents et explorez les catégories disponibles.</p>
+
+    <!-- Section des statistiques -->
+    <div class="row text-center mt-5">
+        <!-- Bloc Catégories -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <h5 class="card-title">Catégories</h5>
+                    <p class="card-text display-4 fw-bold">{{ categories_count }}</p>
+                    <a href="{% url 'categories' %}" class="btn btn-primary mt-auto">Voir les catégories</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloc Documents -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <h5 class="card-title">Documents</h5>
+                    <p class="card-text display-4 fw-bold">{{ documents_count }}</p>
+                    <a href="{% url 'documents' %}" class="btn btn-primary mt-auto">Voir les documents</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloc Visibilité -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <h5 class="card-title">Visibilité</h5>
+                    <p class="card-text">
+                        <strong>Publique :</strong> {{ publique_count }}<br>
+                        <strong>Privée :</strong> {{ privee_count }}<br>
+                        <strong>Restreinte :</strong> {{ restreinte_count }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section des actions rapides -->
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Explorer les catégories</h5>
+                    <p class="card-text">Découvrez les différentes catégories de documents disponibles.</p>
+                    <a href="{% url 'categories' %}" class="btn btn-success">Explorer</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Rechercher un document</h5>
+                    <p class="card-text">Trouvez rapidement un document spécifique dans les archives.</p>
+                    <a href="#" class="btn btn-info">Rechercher</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

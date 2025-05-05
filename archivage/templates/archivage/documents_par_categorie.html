@@ -1,25 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title %}Liste des Documents{% endblock %}
+{% block title %}Documents - {{ categorie.nom }}{% endblock %}
 
 {% block content %}
-<h1>Liste des Documents</h1>
-
-<form method="get" class="mb-3">
-    <label for="visibilite">Filtrer par visibilité :</label>
-    <select name="visibilite" id="visibilite" class="form-select" onchange="this.form.submit()">
-        <option value="publique" {% if visibilite == 'publique' %}selected{% endif %}>Publique</option>
-        <option value="privee" {% if visibilite == 'privee' %}selected{% endif %}>Privée</option>
-        <option value="restreinte" {% if visibilite == 'restreinte' %}selected{% endif %}>Restreinte</option>
-    </select>
-</form>
+<h1>Documents de la catégorie : {{ categorie.nom }}</h1>
+<p>{{ categorie.description }}</p>
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>#</th>
             <th>Titre</th>
-            <th>Catégorie</th>
             <th>Visibilité</th>
             <th>Date de création</th>
             <th>Actions</th>
@@ -30,17 +21,19 @@
         <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ document.titre }}</td>
-            <td>{{ document.categorie.nom }}</td>
             <td>{{ document.get_visibilite_display }}</td>
             <td>{{ document.date_creation }}</td>
             <td>
-                <!-- Lire le document -->
                 <a href="{{ document.fichier.url }}" target="_blank" class="btn btn-primary btn-sm">Lire</a>
-                <!-- Télécharger le document -->
                 <a href="{% url 'telecharger_document' document.id %}" class="btn btn-success btn-sm">Télécharger</a>
             </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">Aucun document trouvé pour cette catégorie.</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<a href="{% url 'categories' %}" class="btn btn-secondary">Retour aux catégories</a>
 {% endblock %}

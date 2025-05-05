@@ -8,6 +8,12 @@ class Categorie(models.Model):
         return self.nom
 
 class Document(models.Model):
+    VISIBILITE_CHOICES = [
+        ('publique', 'Publique'),
+        ('privee', 'Privée'),
+        ('restreinte', 'Restreinte'),
+    ]
+
     titre = models.CharField(max_length=200, verbose_name="Titre du document")
     categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, related_name="documents", verbose_name="Catégorie")
     fichier = models.FileField(upload_to="documents/", verbose_name="Fichier")
@@ -15,6 +21,7 @@ class Document(models.Model):
     date_modification = models.DateTimeField(auto_now=True, verbose_name="Date de modification")
     description = models.TextField(blank=True, null=True, verbose_name="Description")
     responsable = models.CharField(max_length=100, verbose_name="Responsable")
+    visibilite = models.CharField(max_length=20, choices=VISIBILITE_CHOICES, default='publique', verbose_name="Visibilité")
 
     def __str__(self):
         return self.titre
