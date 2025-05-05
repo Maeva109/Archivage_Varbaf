@@ -1,0 +1,35 @@
+{% extends 'baseAdmin.html' %}
+
+{% block title %}Historique des Actions{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Historique des Actions</h1>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Action</th>
+                <th>Utilisateur</th>
+                <th>Date</th>
+                <th>Détails</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entree in historique %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ entree.action }}</td>
+                <td>{{ entree.utilisateur.username }}</td>
+                <td>{{ entree.date|date:"d/m/Y H:i" }}</td>
+                <td>{{ entree.details }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">Aucune entrée d'historique trouvée.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

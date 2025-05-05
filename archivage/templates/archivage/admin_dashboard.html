@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'baseAdmin.html' %}
 
 {% block title %}Tableau de bord Administrateur{% endblock %}
 
@@ -15,7 +15,7 @@
                 <div class="card-body d-flex flex-column justify-content-center">
                     <h5 class="card-title">Catégories</h5>
                     <p class="card-text display-4 fw-bold">{{ categories_count }}</p>
-                    <a href="{% url 'admin:archivage_categorie_changelist' %}" class="btn btn-primary mt-auto">Gérer</a>
+                    <a href="{% url 'liste_categories_admin' %}" class="btn btn-primary mt-auto">Gérer</a>
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
                 <div class="card-body d-flex flex-column justify-content-center">
                     <h5 class="card-title">Documents</h5>
                     <p class="card-text display-4 fw-bold">{{ documents_count }}</p>
-                    <a href="{% url 'admin:archivage_document_changelist' %}" class="btn btn-primary mt-auto">Gérer</a>
+                    <a href="{% url 'liste_documents_admin' %}" class="btn btn-primary mt-auto">Gérer</a>
                 </div>
             </div>
         </div>
@@ -37,7 +37,7 @@
                 <div class="card-body d-flex flex-column justify-content-center">
                     <h5 class="card-title">Utilisateurs</h5>
                     <p class="card-text display-4 fw-bold">{{ users_count }}</p>
-                    <a href="{% url 'admin:auth_user_changelist' %}" class="btn btn-primary mt-auto">Gérer</a>
+                    <a href="{% url 'liste_utilisateurs' %}" class="btn btn-primary mt-auto">Gérer</a>
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
                 <div class="card-body d-flex flex-column justify-content-center">
                     <h5 class="card-title">Historique</h5>
                     <p class="card-text display-4 fw-bold">{{ historique_count }}</p>
-                    <a href="{% url 'admin:archivage_historique_changelist' %}" class="btn btn-primary mt-auto">Voir</a>
+                    <a href="{% url 'liste_historique' %}" class="btn btn-primary mt-auto">Voir</a>
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Ajouter une catégorie</h5>
                     <p class="card-text">Ajoutez une nouvelle catégorie pour organiser vos documents.</p>
-                    <a href="{% url 'admin:archivage_categorie_add' %}" class="btn btn-success">Ajouter</a>
+                    <a href="{% url 'ajouter_categorie' %}" class="btn btn-success">Ajouter</a>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Ajouter un document</h5>
                     <p class="card-text">Ajoutez un nouveau document à la base de données.</p>
-                    <a href="{% url 'admin:archivage_document_add' %}" class="btn btn-success">Ajouter</a>
+                    <a href="{% url 'ajouter_document' %}" class="btn btn-success">Ajouter</a>
                 </div>
             </div>
         </div>
