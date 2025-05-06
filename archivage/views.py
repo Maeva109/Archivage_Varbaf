@@ -9,20 +9,42 @@ def accueil(request):
     return render(request, 'archivage/accueil.html')
 
 def liste_documents(request):
-    visibilite = request.GET.get('visibilite', 'publique')  # Par défaut, affiche les documents publics
-    documents = Document.objects.filter(visibilite=visibilite)
-    return render(request, 'archivage/liste_documents.html', {'documents': documents, 'visibilite': visibilite})
+    query = request.GET.get('q', '')
+    visibilite = request.GET.get('visibilite', '')
+    documents = Document.objects.all()
+
+    if query:
+        documents = documents.filter(titre__icontains=query)
+    if visibilite:
+        documents = documents.filter(visibilite=visibilite)
+
+    return render(request, 'archivage/liste_documents.html', {
+        'documents': documents,
+        'visibilite': visibilite,
+    })
 
 def liste_documents_admin(request):
-    documents = Document.objects.all()
+    query = request.GET.get('q', '')
+    if query:
+        documents = Document.objects.filter(titre__icontains=query)
+    else:
+        documents = Document.objects.all()
     return render(request, 'archivage/liste_documents_admin.html', {'documents': documents})
 
 def liste_categories(request):
-    categories = Categorie.objects.all()
+    query = request.GET.get('q', '')
+    if query:
+        categories = Categorie.objects.filter(nom__icontains=query)
+    else:
+        categories = Categorie.objects.all()
     return render(request, 'archivage/liste_categories.html', {'categories': categories})
 
 def liste_categories_admin(request):
-    categories = Categorie.objects.all()
+    query = request.GET.get('q', '')
+    if query:
+        categories = Categorie.objects.filter(nom__icontains=query)
+    else:
+        categories = Categorie.objects.all()
     return render(request, 'archivage/liste_categories_admin.html', {'categories': categories})
 
 def documents_par_categorie(request, categorie_id):
@@ -123,11 +145,6 @@ def supprimer_categorie(request, categorie_id):
         return redirect('liste_categories')
     return render(request, 'archivage/supprimer_categorie.html', {'categorie': categorie})
 
-# Vue pour afficher la liste des documents
-def liste_documents(request):
-    documents = Document.objects.all()
-    return render(request, 'archivage/liste_documents.html', {'documents': documents})
-
 # Vue pour ajouter un document
 def ajouter_document(request):
     if request.method == 'POST':
@@ -160,9 +177,23 @@ def supprimer_document(request, document_id):
     return render(request, 'archivage/supprimer_document.html', {'document': document})
 
 def liste_utilisateurs(request):
-    utilisateurs = User.objects.all()
+    query = request.GET.get('q', '')
+    if query:
+        utilisateurs = User.objects.filter(username__icontains=query)
+    else:
+        utilisateurs = User.objects.all()
     return render(request, 'archivage/liste_utilisateurs.html', {'utilisateurs': utilisateurs})
 
 def liste_historique(request):
-    historique = Historique.objects.all()
+    query = request.GET.get('q', '')
+    if query:
+        historique = Historique.objects.filter(
+            action__icontains=query
+        ) | Historique.objects.filter(
+            details__icontains=query
+        ) | Historique.objects.filter(
+            utilisateur__username__icontains=query
+        )
+    else:
+        historique = Historique.objects.all()
     return render(request, 'archivage/liste_historique.html', {'historique': historique})

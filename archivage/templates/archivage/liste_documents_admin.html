@@ -5,6 +5,16 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="text-center mb-4">Gestion des Documents</h1>
+
+    <!-- Barre de recherche -->
+    <form method="GET" action="{% url 'liste_documents_admin' %}" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Rechercher un document..."
+                value="{{ request.GET.q }}">
+            <button class="btn btn-primary" type="submit">Rechercher</button>
+        </div>
+    </form>
+
     <a href="{% url 'ajouter_document' %}" class="btn btn-success mb-3">Ajouter un document</a>
     <table class="table table-striped table-hover">
         <thead class="table-dark">
@@ -26,7 +36,7 @@
                 <td>{{ document.categorie.nom }}</td>
                 <td>{{ document.responsable }}</td>
                 <td>{{ document.visibilite }}</td>
-                <td>{{ document.date_ajout|date:"d/m/Y H:i" }}</td>
+                <td>{{ document.date_creation }}</td>
                 <td>
                     <a href="{% url 'modifier_document' document.id %}" class="btn btn-warning btn-sm">Modifier</a>
                     <a href="{% url 'supprimer_document' document.id %}" class="btn btn-danger btn-sm">Supprimer</a>

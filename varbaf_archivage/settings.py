@@ -106,6 +106,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
  # Directory for static files
+STATIC_URL = 'static/' # URL to access static files
 
 MEDIA_URL = '/media/' # URL to access media files
 MEDIA_ROOT = BASE_DIR / 'media' # Directory to store uploaded media files

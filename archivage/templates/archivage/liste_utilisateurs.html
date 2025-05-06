@@ -5,6 +5,16 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="text-center mb-4">Gestion des Utilisateurs</h1>
+
+    <!-- Barre de recherche -->
+    <form method="GET" action="{% url 'liste_utilisateurs' %}" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Rechercher un utilisateur..."
+                value="{{ request.GET.q }}">
+            <button class="btn btn-primary" type="submit">Rechercher</button>
+        </div>
+    </form>
+
     <table class="table table-striped table-hover">
         <thead class="table-dark">
             <tr>

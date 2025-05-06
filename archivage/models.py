@@ -24,7 +24,7 @@ class Document(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name="Description")
     responsable = models.CharField(max_length=100, verbose_name="Responsable")
     visibilite = models.CharField(max_length=20, choices=VISIBILITE_CHOICES, default='publique', verbose_name="Visibilité")
-    date_ajout = models.DateTimeField(auto_now_add=True, default=now)  # Ajoutez default=now
+    # date_ajout = models.DateTimeField(auto_now_add=True, default=now)  # Ajoutez default=now
     def __str__(self):
         return self.titre
 
