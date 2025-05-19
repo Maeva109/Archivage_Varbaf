@@ -1,13 +1,20 @@
 {% extends 'baseAdmin.html' %}
 
-{% block title %}Liste des Documents (Admin){% endblock %}
+{% block title %}Liste des Documents - Administration{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <h1 class="text-center mb-4">Gestion des Documents</h1>
 
+    <!-- Bouton Ajouter -->
+    <div class="mb-3">
+        <a href="{% url 'ajouter_document' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Ajouter un document
+        </a>
+    </div>
+
     <!-- Barre de recherche -->
-    <form method="GET" action="{% url 'liste_documents_admin' %}" class="mb-3">
+    <form method="GET" action="{% url 'liste_documents_admin' %}" class="mb-4">
         <div class="input-group">
             <input type="text" name="q" class="form-control" placeholder="Rechercher un document..."
                 value="{{ request.GET.q }}">
@@ -15,39 +22,67 @@
         </div>
     </form>
 
-    <a href="{% url 'ajouter_document' %}" class="btn btn-success mb-3">Ajouter un document</a>
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>#</th>
-                <th>Titre</th>
-                <th>Catégorie</th>
-                <th>Responsable</th>
-                <th>Visibilité</th>
-                <th>Date d'ajout</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for document in documents %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ document.titre }}</td>
-                <td>{{ document.categorie.nom }}</td>
-                <td>{{ document.responsable }}</td>
-                <td>{{ document.visibilite }}</td>
-                <td>{{ document.date_creation }}</td>
-                <td>
-                    <a href="{% url 'modifier_document' document.id %}" class="btn btn-warning btn-sm">Modifier</a>
-                    <a href="{% url 'supprimer_document' document.id %}" class="btn btn-danger btn-sm">Supprimer</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" class="text-center">Aucun document trouvé.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Table des documents -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Titre</th>
+                    <th>Catégorie</th>
+                    <th>Date de création</th>
+                    <th>Responsable</th>
+                    <th>Visibilité</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for document in documents %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ document.titre }}</td>
+                    <td>{{ document.categorie.nom }}</td>
+                    <td>{{ document.date_creation|date:"d/m/Y H:i" }}</td>
+                    <td>{{ document.responsable }}</td>
+                    <td>
+                        <span class="badge {% if document.visibilite == 'publique' %}bg-success
+                                         {% elif document.visibilite == 'privee' %}bg-danger
+                                         {% else %}bg-warning{% endif %}">
+                            {{ document.get_visibilite_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <!-- Bouton Consulter -->
+                            <a href="{% url 'consulter_document' document.id %}" class="btn btn-info btn-sm"
+                                title="Consulter">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <!-- Bouton Télécharger -->
+                            <a href="{% url 'telecharger_document' document.id %}" class="btn btn-primary btn-sm"
+                                title="Télécharger">
+                                <i class="fas fa-download"></i>
+                            </a>
+                            <!-- Bouton Modifier -->
+                            <a href="{% url 'modifier_document' document.id %}" class="btn btn-warning btn-sm"
+                                title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <!-- Bouton Supprimer -->
+                            <a href="{% url 'supprimer_document' document.id %}" class="btn btn-danger btn-sm"
+                                title="Supprimer">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">Aucun document trouvé.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

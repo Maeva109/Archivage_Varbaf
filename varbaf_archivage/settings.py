@@ -1,4 +1,3 @@
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'widget_tweaks',  # Pour les formulaires
     'archivage',  # Your custom app
 ]
 
@@ -63,12 +63,27 @@ WSGI_APPLICATION = 'varbaf_archivage.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'archvarbaf',         # Remplace par le nom de ta base MySQL
+        'USER': 'root',  # Remplace par ton utilisateur MySQL
+        'PASSWORD': '',   # Remplace par ton mot de passe MySQL
+        'HOST': 'localhost',              # Ou l'adresse de ton serveur MySQL
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
+
 
 
 # Password validation
@@ -115,3 +130,17 @@ MEDIA_ROOT = BASE_DIR / 'media' # Directory to store uploaded media files
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Auth settings
+LOGIN_REDIRECT_URL = '/admin-dashboard/'  # Redirection après connexion réussie
+LOGIN_URL = '/accounts/login/'  # URL de la page de connexion
+LOGOUT_REDIRECT_URL = '/'  # Redirection après déconnexion
+
+# Email settings (pour le développement)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Affiche les emails dans la console
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'franckfetuef@gmail.com'
+EMAIL_HOST_PASSWORD = 'tobb hpjk uyyf tish'
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = 'franckfetuef@gmail.com'

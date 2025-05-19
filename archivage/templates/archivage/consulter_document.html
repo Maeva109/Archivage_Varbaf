@@ -1,0 +1,194 @@
+{% extends 'baseAdmin.html' %}
+
+{% block title %}{{ document.titre }}{% endblock %}
+
+{% block extra_head %}
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+    // Spécifier le worker path pour PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
+{% endblock %}
+
+{% block content %} 
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h1 class="h4 mb-0">{{ document.titre }}</h1>
+                    <div>
+                        <a href="{% url 'telecharger_document' document.id %}" class="btn btn-light">
+                            <i class="fas fa-download"></i> Télécharger
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Informations générales</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Catégorie :</th>
+                                    <td>{{ document.categorie.nom }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Responsable :</th>
+                                    <td>{{ document.responsable }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Visibilité :</th>
+                                    <td>
+                                        <span class="badge {% if document.visibilite == 'publique' %}bg-success
+                                                         {% elif document.visibilite == 'privee' %}bg-danger
+                                                         {% else %}bg-warning{% endif %}">
+                                            {{ document.get_visibilite_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Dates</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Création :</th>
+                                    <td>{{ document.date_creation|date:"d/m/Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Dernière modification :</th>
+                                    <td>{{ document.date_modification|date:"d/m/Y H:i" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    {% if document.description %}
+                    <div class="mb-4">
+                        <h5>Description</h5>
+                        <p class="card-text">{{ document.description }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-4">
+                        <h5>Aperçu du document</h5>
+                        {% with ext=document.fichier.name|lower %}
+                        {% if '.pdf' in ext %}
+                        <div class="pdf-container mb-3">
+                            <canvas id="pdfViewer" class="w-100 border rounded"></canvas>
+                        </div>
+                        <div class="text-center mt-3">
+                            <div class="btn-group">
+                                <button id="prev" class="btn btn-secondary">
+                                    <i class="fas fa-chevron-left"></i> Page précédente
+                                </button>
+                                <span class="btn btn-light disabled" id="page_num"></span>
+                                <button id="next" class="btn btn-secondary">
+                                    Page suivante <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <a href="{{ document.fichier.url }}" class="btn btn-primary ms-3" target="_blank">
+                                <i class="fas fa-external-link-alt me-2"></i>Ouvrir dans un nouvel onglet
+                            </a>
+                        </div>
+                        <script>
+                            let pdfDoc = null,
+                                pageNum = 1,
+                                pageRendering = false,
+                                pageNumPending = null,
+                                scale = 1.5,
+                                canvas = document.getElementById('pdfViewer'),
+                                ctx = canvas.getContext('2d');
+
+                            function renderPage(num) {
+                                pageRendering = true;
+                                pdfDoc.getPage(num).then(function (page) {
+                                    let viewport = page.getViewport({ scale: scale });
+                                    canvas.height = viewport.height;
+                                    canvas.width = viewport.width;
+
+                                    let renderContext = {
+                                        canvasContext: ctx,
+                                        viewport: viewport
+                                    };
+                                    let renderTask = page.render(renderContext);
+
+                                    renderTask.promise.then(function () {
+                                        pageRendering = false;
+                                        if (pageNumPending !== null) {
+                                            renderPage(pageNumPending);
+                                            pageNumPending = null;
+                                        }
+                                    });
+                                });
+
+                                document.getElementById('page_num').textContent = `Page ${num} / ${pdfDoc.numPages}`;
+                            }
+
+                            function queueRenderPage(num) {
+                                if (pageRendering) {
+                                    pageNumPending = num;
+                                } else {
+                                    renderPage(num);
+                                }
+                            }
+
+                            function onPrevPage() {
+                                if (pageNum <= 1) {
+                                    return;
+                                }
+                                pageNum--;
+                                queueRenderPage(pageNum);
+                            }
+
+                            function onNextPage() {
+                                if (pageNum >= pdfDoc.numPages) {
+                                    return;
+                                }
+                                pageNum++;
+                                queueRenderPage(pageNum);
+                            }
+
+                            document.getElementById('prev').addEventListener('click', onPrevPage);
+                            document.getElementById('next').addEventListener('click', onNextPage);
+
+                            // Chargement du PDF
+                            pdfjsLib.getDocument('{{ document.fichier.url }}').promise.then(function (pdfDoc_) {
+                                pdfDoc = pdfDoc_;
+                                renderPage(pageNum);
+                            });
+                        </script>
+                        {% elif '.jpg' in ext or '.jpeg' in ext or '.png' in ext or '.gif' in ext %}
+                        <img src="{{ document.fichier.url }}" class="img-fluid rounded" alt="{{ document.titre }}">
+                        {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            L'aperçu n'est pas disponible pour ce type de fichier.
+                            <a href="{{ document.fichier.url }}" class="btn btn-primary ms-3" target="_blank">
+                                <i class="fas fa-external-link-alt me-2"></i>Ouvrir le fichier
+                            </a>
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'liste_documents_admin' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à la liste
+                        </a>
+                        <div>
+                            <a href="{% url 'modifier_document' document.id %}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Modifier
+                            </a>
+                            <a href="{% url 'supprimer_document' document.id %}" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -4,7 +4,9 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Tableau de bord Administrateur</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Tableau de bord Administrateur</h1>
+    </div>
     <p class="text-center">Gérez les catégories, documents et utilisateurs depuis ce tableau de bord.</p>
 
     <!-- Section des statistiques -->
@@ -56,21 +58,36 @@
 
     <!-- Section des actions rapides -->
     <div class="row mt-5">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Ajouter une catégorie</h5>
                     <p class="card-text">Ajoutez une nouvelle catégorie pour organiser vos documents.</p>
-                    <a href="{% url 'ajouter_categorie' %}" class="btn btn-success">Ajouter</a>
+                    <a href="{% url 'ajouter_categorie' %}" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Ajouter
+                    </a>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Ajouter un document</h5>
                     <p class="card-text">Ajoutez un nouveau document à la base de données.</p>
-                    <a href="{% url 'ajouter_document' %}" class="btn btn-success">Ajouter</a>
+                    <a href="{% url 'ajouter_document' %}" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Ajouter
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Gérer les utilisateurs</h5>
+                    <p class="card-text">Ajoutez ou supprimez des utilisateurs du système.</p>
+                    <a href="{% url 'ajouter_utilisateur' %}" class="btn btn-success">
+                        <i class="fas fa-user-plus me-2"></i>Ajouter un utilisateur
+                    </a>
                 </div>
             </div>
         </div>

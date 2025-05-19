@@ -3,37 +3,70 @@
 {% block title %}Documents - {{ categorie.nom }}{% endblock %}
 
 {% block content %}
-<h1>Documents de la catégorie : {{ categorie.nom }}</h1>
-<p>{{ categorie.description }}</p>
+<div class="container mt-4">
+    <h1>Documents de la catégorie : {{ categorie.nom }}</h1>
+    <p>{{ categorie.description }}</p>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Titre</th>
-            <th>Visibilité</th>
-            <th>Date de création</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for document in documents %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ document.titre }}</td>
-            <td>{{ document.get_visibilite_display }}</td>
-            <td>{{ document.date_creation }}</td>
-            <td>
-                <a href="{{ document.fichier.url }}" target="_blank" class="btn btn-primary btn-sm">Lire</a>
-                <a href="{% url 'telecharger_document' document.id %}" class="btn btn-success btn-sm">Télécharger</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5" class="text-center">Aucun document trouvé pour cette catégorie.</td>
-        </tr>
+    {% if messages %}
+    <div class="messages mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         {% endfor %}
-    </tbody>
-</table>
-<a href="{% url 'categories' %}" class="btn btn-secondary">Retour aux catégories</a>
+    </div>
+    {% endif %}
+
+    {% if not peut_voir_prives %}
+    <div class="alert alert-info mb-4">
+        <i class="fas fa-info-circle"></i> Vous visualisez uniquement les documents publics.
+        <a href="{% url 'login' %}" class="alert-link">Connectez-vous</a> pour accéder aux documents privés.
+    </div>
+    {% endif %}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Titre</th>
+                <th>Visibilité</th>
+                <th>Date de création</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in documents %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ document.titre }}</td>
+                <td>
+                    <span
+                        class="badge {% if document.visibilite == 'publique' %}bg-success{% else %}bg-warning{% endif %}">
+                        <i
+                            class="fas fa-{% if document.visibilite == 'publique' %}globe{% else %}lock{% endif %} me-1"></i>
+                        {{ document.get_visibilite_display }}
+                    </span>
+                </td>
+                <td>{{ document.date_creation|date:"d/m/Y H:i" }}</td>
+                <td>
+                    <div class="btn-group">
+                        <a href="{{ document.fichier.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{% url 'telecharger_document' document.id %}" class="btn btn-sm btn-outline-success">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">Aucun document trouvé dans cette catégorie.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'categories' %}" class="btn btn-secondary">Retour aux catégories</a>
+</div>
 {% endblock %}
